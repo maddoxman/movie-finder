@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Movie Finder helps you explore movies, filter by genre and age rating, and save a personal wish list.">
+  <title>Movie Finder — Find Your Next Movie</title>
+  <style>
+    :root{--bg:#020b16;--panel:#071725;--panel2:#102437;--text:#f5f8fc;--muted:#9eb5c9;--gold:#ffc83d;--gold2:#ffe28b;--border:rgba(142,184,215,.22);--green:#8de0b0;--red:#ff9999}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:100px}
+    body{margin:0;min-height:100vh;color:var(--text);background:radial-gradient(ellipse at 50% -10%,#173e5d 0%,#061625 37%,var(--bg) 75%);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,input,select{font:inherit}button,a,select{-webkit-tap-highlight-color:transparent}a{color:var(--gold2)}
+    .wrap{width:min(1500px,calc(100% - 48px));margin:0 auto}
+    header{position:relative;z-index:10;background:linear-gradient(90deg,rgba(2,10,20,.97),rgba(4,23,39,.92),rgba(2,10,20,.97));border-bottom:1px solid var(--border);overflow:hidden}
+    header:after{content:"";position:absolute;right:4%;top:-110px;width:42%;height:220px;background:radial-gradient(ellipse,rgba(17,131,190,.24),transparent 68%);pointer-events:none}
+    .nav{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:110px;padding:14px 0}
+    .brand{display:flex;align-items:center;gap:16px;font-weight:900;letter-spacing:-.055em;font-size:clamp(2rem,4vw,3.4rem);line-height:1}
+    .brand-mark{display:grid;place-items:center;color:var(--gold);font-size:3.4rem;filter:drop-shadow(0 6px 16px rgba(255,200,61,.15))}
+    .brand-name span{color:var(--gold)}.tagline{font-size:.85rem;letter-spacing:.2em;text-transform:uppercase;font-weight:650;color:#e3edf5;margin-top:10px}
+    .nav-links{display:flex;gap:20px;align-items:center;color:var(--muted);font-size:.92rem}.nav-links a{text-decoration:none;color:inherit}.nav-links a:hover{color:var(--gold2)}
+    .pill{border:1px solid var(--border);border-radius:999px;padding:9px 13px;color:var(--muted);font-size:.85rem;white-space:nowrap;background:rgba(6,24,39,.75)}
+    .top-wishlist{display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none;white-space:nowrap}.count-dot{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--gold);color:#17120a;font-weight:900}
+    .hero{padding:22px 0 10px;min-height:0;display:block}.hero-copy{display:none}.hero-card{position:relative;min-height:78px;border:1px solid rgba(105,171,210,.2);border-radius:16px;padding:17px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;overflow:hidden;background:linear-gradient(100deg,rgba(11,40,62,.96),rgba(8,25,41,.76)),radial-gradient(ellipse at 80% 0%,rgba(22,145,195,.28),transparent 50%)}
+    .hero-card:after{content:"✦";position:absolute;right:22%;top:-35px;font-size:9rem;opacity:.06}.hero-card h2{font-size:1.2rem;letter-spacing:-.03em;margin:0 0 3px}.hero-card p{margin:0;color:var(--muted);font-size:.88rem}.hero-card .mini{color:var(--gold);font-size:.72rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;white-space:nowrap}
+    .section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:18px 0 14px}h2.section-title{font-size:1.45rem;letter-spacing:-.04em;margin:0}.section-sub{color:var(--muted);margin:6px 0 0;font-size:.92rem}
+    .controls{display:grid;grid-template-columns:minmax(220px,1fr) 170px 170px 150px 120px;gap:12px;margin:14px 0 22px;align-items:center}
+    input,select{width:100%;background:linear-gradient(120deg,#102638,#071927);border:1px solid rgba(145,187,215,.27);color:var(--text);border-radius:999px;padding:14px 16px;outline:none;min-height:48px}input::placeholder{color:#8da5b8}input:focus,select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,200,61,.1)}select option{background:var(--panel)}
+    .btn{border:1px solid var(--border);border-radius:999px;padding:10px 14px;font-weight:700;cursor:pointer;transition:transform .15s,background .15s,border-color .15s}.btn:hover{transform:translateY(-1px);border-color:rgba(255,200,61,.55)}.btn-primary{color:#14100a;background:linear-gradient(135deg,#ffe17a,#f4b82f);border-color:transparent}.btn-secondary{color:var(--text);background:rgba(12,34,51,.92)}
+    .movie-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px}.movie-card{border:1px solid rgba(129,174,205,.24);background:linear-gradient(180deg,rgba(5,24,39,.98),rgba(3,17,29,.98));border-radius:12px;overflow:hidden;display:flex;flex-direction:column;min-width:0;box-shadow:0 10px 24px rgba(0,0,0,.16);transition:transform .18s,border-color .18s}.movie-card:hover{transform:translateY(-3px);border-color:rgba(255,200,61,.48)}
+    .poster{height:clamp(170px,17vw,235px);min-height:150px;display:grid;place-items:center;font-size:4.3rem;position:relative;overflow:hidden;background:linear-gradient(135deg,#214761,#091725);isolation:isolate}.poster:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 20%,rgba(255,255,255,.24),transparent 25%),linear-gradient(0deg,rgba(0,0,0,.82),transparent 70%);z-index:-1}.poster:after{content:"";position:absolute;inset:0;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.05) 48%,transparent 75%);pointer-events:none}.poster span.poster-emoji{filter:drop-shadow(0 10px 18px rgba(0,0,0,.5));transform:scale(1.08)}.poster-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}.poster:before{z-index:1}.poster-title,.rating-badge{z-index:2}.poster span.poster-emoji{position:relative;z-index:2}.poster.has-image:before{background:linear-gradient(0deg,rgba(0,0,0,.9),rgba(0,0,0,.04) 72%)}.poster.has-image .poster-emoji{display:none}.poster-title{position:absolute;left:10px;right:10px;bottom:13px;text-align:center;font-weight:950;text-transform:uppercase;letter-spacing:.04em;font-size:clamp(.75rem,1.15vw,1.15rem);line-height:1.08;text-shadow:0 2px 12px #000}.rating-badge{position:absolute;top:9px;left:9px;z-index:1;background:rgba(5,12,18,.84);border:1px solid rgba(255,255,255,.18);padding:4px 7px;border-radius:6px;font-size:.7rem;font-weight:850}
+    .movie-body{padding:10px 12px 12px;display:flex;flex-direction:column;flex:1}.movie-title-row{display:flex;gap:7px;justify-content:space-between;align-items:start}.movie-title{margin:0;font-size:.93rem;letter-spacing:-.025em;line-height:1.25}.year{color:var(--muted);font-size:.78rem;white-space:nowrap}.meta{display:flex;gap:7px;flex-wrap:wrap;margin:7px 0}.tag{color:#b8d4e8;border:0;border-radius:5px;padding:3px 6px;font-size:.68rem;background:rgba(56,103,135,.25)}.tag.rating{background:rgba(255,200,61,.16);color:var(--gold2)}.description{color:#b3c7d7;font-size:.78rem;line-height:1.45;margin:0 0 12px;flex:1}.card-actions{display:flex;gap:7px;align-items:center}.card-actions .btn{padding:7px 10px;font-size:.74rem;flex:1;white-space:nowrap}.saved{color:var(--green)!important;border-color:rgba(141,224,176,.4)!important}.empty{border:1px dashed var(--border);border-radius:14px;padding:30px;text-align:center;color:var(--muted);grid-column:1/-1}
+    .wishlist-panel{background:linear-gradient(120deg,rgba(8,28,44,.96),rgba(4,17,30,.96));border:1px solid var(--border);border-radius:18px;padding:20px;margin:30px 0 45px;scroll-margin-top:120px}.wishlist-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.wishlist-top h2{margin:0;letter-spacing:-.04em}.saved-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.saved-chip{display:flex;align-items:center;gap:9px;border:1px solid var(--border);border-radius:12px;padding:9px 11px;background:var(--panel2)}.saved-chip button{background:none;color:var(--red);border:0;cursor:pointer;font-weight:900}.note{color:var(--muted);font-size:.82rem;line-height:1.6;margin-top:14px}footer{border-top:1px solid var(--border);padding:22px 0 32px;color:var(--muted);font-size:.82rem}.toast{min-height:1.2em;color:var(--green);font-size:.85rem;margin-top:10px}
+    .bottom-wishlist{position:sticky;bottom:0;z-index:8;margin-top:12px;background:rgba(5,18,31,.94);backdrop-filter:blur(16px);border-top:1px solid var(--border);box-shadow:0 -8px 24px rgba(0,0,0,.18)}.bottom-wishlist .wrap{min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:12px}.bottom-label{display:flex;align-items:center;gap:12px;font-weight:800}.heart-mark{font-size:1.45rem;color:#ffb64d}.bottom-wishlist a{color:var(--text);text-decoration:none;border:1px solid var(--border);border-radius:999px;padding:8px 13px;font-size:.78rem}
+    @media(max-width:1180px){.movie-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.controls{grid-template-columns:minmax(180px,1fr) repeat(2,minmax(130px,160px)) 130px 110px}.poster{height:220px}}
+    @media(max-width:820px){.wrap{width:min(100% - 28px,680px)}.nav{min-height:85px}.brand{font-size:2rem}.brand-mark{font-size:2.5rem}.nav-links{display:none}.controls{grid-template-columns:1fr 1fr}.controls input{grid-column:1/-1}.movie-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.poster{height:190px}.hero-card{align-items:flex-start;flex-direction:column;gap:7px}.hero-card .mini:last-child{display:none}}
+    @media(max-width:560px){.wrap{width:calc(100% - 20px)}.brand{font-size:1.65rem;gap:9px}.brand-mark{font-size:2.1rem}.tagline{font-size:.62rem;letter-spacing:.14em}.top-wishlist{font-size:.78rem}.count-dot{width:26px;height:26px}.nav{gap:8px;min-height:76px}.section-head{align-items:start}.movie-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.poster{height:180px;min-height:150px}.movie-body{padding:9px}.movie-title{font-size:.88rem}.description{font-size:.75rem}.card-actions{flex-direction:column;align-items:stretch}.card-actions .btn{width:100%}.controls{gap:8px}.controls select{padding:12px 10px;font-size:.84rem}.hero{padding-top:14px}.hero-card{padding:14px}.wishlist-panel{padding:14px}.bottom-wishlist .wrap{min-height:54px}.bottom-label{font-size:.85rem}}
+    @media(max-width:360px){.movie-grid{grid-template-columns:1fr}.poster{height:220px}.top-wishlist .wish-label{display:none}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#discover" style="text-decoration:none;color:inherit"><span class="brand-mark" aria-hidden="true">🎬</span><span><span class="brand-name">Movie <span>Finder</span></span><div class="tagline">Discover&nbsp; ★ &nbsp;Watch&nbsp; ★ &nbsp;Enjoy</div></span></a>
+      <nav class="nav-links" aria-label="Main navigation"><a href="#discover">Discover</a><a href="#wishlist">My Wish List</a><a href="#about">About</a></nav>
+      <a class="top-wishlist" href="#wishlist" aria-label="My Wish List"><span>♡</span><span class="wish-label">My Wish List</span><span class="count-dot" id="savedCountTop">0</span></a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero" aria-label="Movie Finder introduction">
+      <div class="hero-copy"><div class="eyebrow">Your next movie starts here</div><h1>Movie Finder</h1></div>
+      <div class="hero-card"><div><h2>Discover your next movie night.</h2><p>Search the collection, explore genres, and save movies for later.</p></div><div class="mini">✦ PICK A MOVIE. MAKE IT A NIGHT.</div></div>
+    </section>
+
+    <section id="discover">
+      <div class="section-head"><div><h2 class="section-title">Discover movies</h2><p class="section-sub">Find a favorite, or discover something new.</p></div><span class="pill" id="resultCount">0 movies</span></div>
+      <div class="controls">
+        <input id="searchInput" type="search" placeholder="⌕  Search for a movie…" aria-label="Search movies">
+        <select id="genreFilter" aria-label="Filter by genre"><option value="">All Genres</option><option>Adventure</option><option>Animation</option><option>Comedy</option><option>Family</option><option>Fantasy</option><option>Sci-Fi</option><option>Mystery</option><option>Drama</option><option>Action</option><option>Thriller</option></select>
+        <select id="ratingFilter" aria-label="Filter by age rating"><option value="">All Ratings</option><option>G</option><option>PG</option><option>PG-13</option><option>R</option></select>
+        <select id="yearFilter" aria-label="Filter by release year"><option value="">All Years</option></select>
+        <button class="btn btn-secondary" id="clearFilters">Clear</button>
+      </div>
+      <div class="movie-grid" id="movieGrid" aria-live="polite"></div>
+    </section>
+
+    <section class="wishlist-panel" id="wishlist">
+      <div class="wishlist-top">
+        <div><h2>My wish list <span style="color:var(--gold)" id="savedCountHeading">(0)</span></h2><p class="section-sub">Your saved movies stay in this browser.</p></div>
+        <button class="btn btn-secondary" id="clearWatchlist">Clear wish list</button>
+      </div>
+      <div class="saved-list" id="savedList"></div>
+      <p class="note">This demo saves your wish list on this device using browser storage. It does not create an account or sync to other devices. Movie details are sample data; always check an official rating and a trusted parent guide before watching.</p>
+      <div class="toast" id="statusMessage" role="status" aria-live="polite"></div>
+    </section>
+
+    <section id="about" style="padding-bottom:36px">
+      <h2 class="section-title">About Movie Finder</h2>
+      <p class="section-sub" style="max-width:760px;line-height:1.7">This is a starter website: it works on phones and computers, searches its built-in sample collection, and remembers your wish list in the same browser. It does not yet connect to a live movie database or stream trailers.</p>
+    </section>
+  </main>
+
+  <div class="bottom-wishlist"><div class="wrap"><div class="bottom-label"><span class="heart-mark">💛</span><span>My Wish List <span style="color:var(--gold)" id="savedCountBottom">(0)</span></span></div><a href="#wishlist">View Wish List →</a></div></div>
+  <footer><div class="wrap">© <span id="yearNow"></span> Movie Finder · A beginner-friendly movie discovery project</div></footer>
+
+  <script>
+    const movies = [
+      {id:"spider-verse", title:"Spider-Man: Into the Spider-Verse", year:2018, rating:"PG", genre:"Animation", emoji:"🕷️", colors:["#5729a5","#142d70"], poster:"https://image.tmdb.org/t/p/w500/8V8G0V3s7s7V1Q0x0V7nJ4c7zQ.jpg", description:"An animated superhero adventure about Miles Morales discovering what makes him unique."},
+      {id:"paddington-2", title:"Paddington 2", year:2017, rating:"PG", genre:"Family", emoji:"🧸", colors:["#c66a32","#6b2930"], poster:"https://image.tmdb.org/t/p/w500/1OJ9vkD5xPt3skC6KguyXAgagRZ.jpg", description:"A kind-hearted bear gets caught up in a mystery while searching for a special gift."},
+      {id:"the-martian", title:"The Martian", year:2015, rating:"PG-13", genre:"Sci-Fi", emoji:"🚀", colors:["#b65b37","#492b39"], poster:"https://image.tmdb.org/t/p/w500/5aGhaIHYuQbqlHWvWYqMCnj40y2.jpg", description:"An astronaut uses science, creativity, and persistence to survive on Mars."},
+      {id:"jumanji", title:"Jumanji: Welcome to the Jungle", year:2017, rating:"PG-13", genre:"Adventure", emoji:"🌴", colors:["#1b765c","#163b55"], poster:"https://image.tmdb.org/t/p/w500/bXrZ5iHBEjH7WMidbUDQ0U2xbmr.jpg", description:"Four teens enter a video game world and must work together to get home."},
+      {id:"the-incredibles", title:"The Incredibles", year:2004, rating:"PG", genre:"Animation", emoji:"🦸", colors:["#d53d2f","#73251e"], poster:"https://image.tmdb.org/t/p/w500/2LqaLgk4Z226KkgPJuiOQ58wvrm.jpg", description:"A superhero family balances everyday life with an unexpected mission."},
+      {id:"back-to-the-future", title:"Back to the Future", year:1985, rating:"PG", genre:"Sci-Fi", emoji:"⏰", colors:["#2b65a4","#512e6d"], poster:"https://image.tmdb.org/t/p/w500/7lyBcpYB0Qt8gYhXYaEZUNlNQAv.jpg", description:"A teenager travels back in time and has to help history get back on track."},
+      {id:"knives-out", title:"Knives Out", year:2019, rating:"PG-13", genre:"Mystery", emoji:"🔎", colors:["#a8793e","#2c2736"], poster:"https://image.tmdb.org/t/p/w500/pThyQovXQrw2m0s9x82twj48Jq4.jpg", description:"A detective investigates a wealthy family's tangled mystery."},
+      {id:"ghostbusters", title:"Ghostbusters", year:1984, rating:"PG", genre:"Comedy", emoji:"👻", colors:["#3379a1","#252348"], poster:"https://image.tmdb.org/t/p/w500/7E8nLijS9AwwUEPu2oFYOVKhdFA.jpg", description:"A team of quirky investigators starts a business dealing with unusual hauntings."},
+      {id:"finding-nemo", title:"Finding Nemo", year:2003, rating:"G", genre:"Animation", emoji:"🐠", colors:["#1599ba","#064d83"], poster:"https://image.tmdb.org/t/p/w500/eHuGQ10FUzK1mdOY69wF5pGgEf5.jpg", description:"A cautious clownfish crosses the ocean to find his missing son."},
+      {id:"the-lord-of-the-rings", title:"The Lord of the Rings: The Fellowship of the Ring", year:2001, rating:"PG-13", genre:"Fantasy", emoji:"💍", colors:["#456c47","#263b36"], poster:"https://image.tmdb.org/t/p/w500/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg", description:"A young hobbit joins a fellowship on a dangerous quest across Middle-earth."},
+      {id:"jurassic-park", title:"Jurassic Park", year:1993, rating:"PG-13", genre:"Adventure", emoji:"🦖", colors:["#b6a34a","#283b35"], poster:"https://image.tmdb.org/t/p/w500/b1xCNnyrPebIc7EWNZIa6jhb1Ww.jpg", description:"Visitors tour a dinosaur theme park where the safety systems fail."},
+      {id:"the-shawshank-redemption", title:"The Shawshank Redemption", year:1994, rating:"R", genre:"Drama", emoji:"🔑", colors:["#536a7b","#242f3e"], poster:"https://image.tmdb.org/t/p/w500/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg", description:"Two prisoners form a friendship while holding on to hope. Mature themes."}
+      ,
+      {id:"the-sixth-sense", title:"The Sixth Sense", year:1999, rating:"PG-13", genre:"Mystery", emoji:"👻", colors:["#35485e","#151b2a"], poster:"https://image.tmdb.org/t/p/w500/fIssD3w3SvIhPPmVo4WMgZDVLID.jpg", description:"A child psychologist works with a young boy who says he can see and speak to the dead. Contains scary scenes and mature themes."},
+      {id:"top-gun", title:"Top Gun", year:1986, rating:"PG", genre:"Adventure", emoji:"✈️", colors:["#315d83","#18253c"], poster:"https://image.tmdb.org/t/p/w500/3X3V8X9Q6x8Qz6mV3kz1yZ7gqz.jpg", description:"A talented Navy pilot trains at an elite flight school and faces competition, teamwork, and personal challenges."},
+      {id:"top-gun-maverick", title:"Top Gun: Maverick", year:2022, rating:"PG-13", genre:"Adventure", emoji:"🛩️", colors:["#486c7a","#1b2838"], poster:"https://image.tmdb.org/t/p/w500/62HCnUTziyWcpDaBO2i1DX17ljH.jpg", description:"An experienced Navy pilot trains a new group of pilots for a difficult mission."},
+      {id:"the-hunt-for-red-october", title:"The Hunt for Red October", year:1990, rating:"PG", genre:"Adventure", emoji:"🚢", colors:["#315b61","#17232f"], poster:"https://image.tmdb.org/t/p/w500/yVl7xue5LqC4j7p7o6m1r9pZV.jpg", description:"A submarine captain's actions spark a tense naval mystery during the Cold War."},
+      {id:"inception", title:"Inception", year:2010, rating:"PG-13", genre:"Sci-Fi", emoji:"🏙️", colors:["#15485f","#071320"], poster:"https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg", description:"A thief enters people's dreams to steal a secret, but things go wrong."},
+      {id:"interstellar", title:"Interstellar", year:2014, rating:"PG-13", genre:"Sci-Fi", emoji:"🪐", colors:["#a4c4d2","#233b50"], poster:"https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg", description:"A team travels through a wormhole to find a new home for humanity."},
+      {id:"the-dark-knight", title:"The Dark Knight", year:2008, rating:"PG-13", genre:"Action", emoji:"🦇", colors:["#1b3548","#05090f"], poster:"https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg", description:"Batman faces a criminal who challenges Gotham City."},
+      {id:"forrest-gump", title:"Forrest Gump", year:1994, rating:"PG-13", genre:"Drama", emoji:"🪑", colors:["#e5d5bd","#6e5239"], poster:"https://image.tmdb.org/t/p/w500/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg", description:"A simple man's life touches many people and changes history."},
+      {id:"gladiator", title:"Gladiator", year:2000, rating:"R", genre:"Action", emoji:"🛡️", colors:["#b88b4b","#332319"], poster:"https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg", description:"A general becomes a gladiator and seeks justice in ancient Rome."}
+    ];
+    const STORAGE_KEY = "movieFinderWatchlistV1";
+    let savedIds = loadSaved();
+    const $ = (id) => document.getElementById(id);
+    function loadSaved() {
+      try {
+        const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        return Array.isArray(value) ? value : [];
+      } catch { return []; }
+    }
+    function saveSaved() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(savedIds));
+        $("statusMessage").textContent = "Wish List saved in this browser.";
+      } catch {
+        $("statusMessage").textContent = "Browser storage is unavailable. Your list may not be saved after closing the page.";
+      }
+      renderCounts();
+    }
+    function isSaved(id) { return savedIds.includes(id); }
+    function toggleSaved(id) {
+      if (isSaved(id)) {
+        savedIds = savedIds.filter(savedId => savedId !== id);
+        $("statusMessage").textContent = "Movie removed from your wish list.";
+      } else {
+        savedIds.push(id);
+        $("statusMessage").textContent = "Movie added to your wish list!";
+      }
+      saveSaved();
+      renderMovies();
+      renderWishList();
+    }
+    function renderCounts() {
+      $("savedCountTop").textContent = savedIds.length;
+      $("savedCountHeading").textContent = `(${savedIds.length})`;
+      $("savedCountBottom").textContent = `(${savedIds.length})`;
+    }
+    function renderMovies() {
+      const query = $("searchInput").value.trim().toLowerCase();
+      const genre = $("genreFilter").value;
+      const rating = $("ratingFilter").value;
+      const year = $("yearFilter").value;
+      const filtered = movies.filter(movie =>
+        (!query || `${movie.title} ${movie.description} ${movie.genre}`.toLowerCase().includes(query)) &&
+        (!genre || movie.genre === genre) &&
+        (!rating || movie.rating === rating) &&
+        (!year || String(movie.year) === year)
+      );
+      $("resultCount").textContent = `${filtered.length} movie${filtered.length === 1 ? "" : "s"}`;
+      const grid = $("movieGrid");
+      if (!filtered.length) {
+        grid.innerHTML = '<div class="empty"><strong>No movies found.</strong><br>Try a different search or clear your filters.</div>';
+        return;
+      }
+      grid.innerHTML = filtered.map(movie => `
+        <article class="movie-card">
+          <div class="poster" style="background:linear-gradient(135deg,${movie.colors[0]},${movie.colors[1]})">
+            ${movie.poster ? `<img class="poster-image" src="${movie.poster}" alt="${escapeHtml(movie.title)} poster" loading="lazy" onload="this.parentElement.classList.add('has-image')" onerror="this.remove()">` : ""}
+            <span class="rating-badge">${movie.rating}</span><span class="poster-emoji" aria-hidden="true">${movie.emoji}</span><span class="poster-title">${escapeHtml(movie.title)}</span>
+          </div>
+          <div class="movie-body">
+            <div class="movie-title-row"><h3 class="movie-title">${escapeHtml(movie.title)}</h3></div>
+            <div class="meta"><span class="year">${movie.year}</span><span class="tag rating">${movie.rating}</span><span class="tag">${movie.genre}</span></div>
+            <p class="description">${escapeHtml(movie.description)}</p>
+            <div class="card-actions"><button class="btn ${isSaved(movie.id) ? "btn-secondary saved" : "btn-secondary"}" data-save="${movie.id}">${isSaved(movie.id) ? "✓ Saved" : "♡ Wish List"}</button><button class="btn btn-secondary" data-info="${movie.id}" aria-label="Details for ${escapeHtml(movie.title)}">Details</button></div>
+          </div>
+        </article>`).join("");
+      grid.querySelectorAll("[data-save]").forEach(button => button.addEventListener("click", () => toggleSaved(button.dataset.save)));
+      grid.querySelectorAll("[data-info]").forEach(button => button.addEventListener("click", () => {
+        const movie = movies.find(item => item.id === button.dataset.info);
+        alert(`${movie.title} (${movie.year})\\nRating: ${movie.rating}\\nGenre: ${movie.genre}\\n\\n${movie.description}\\n\\nThis is sample information. Please verify official ratings and content details before watching.`);
+      }));
+    }
+    function renderWishList() {
+      const savedMovies = movies.filter(movie => isSaved(movie.id));
+      const list = $("savedList");
+      if (!savedMovies.length) {
+        list.innerHTML = '<div class="empty" style="width:100%">Your wish list is empty. Use “+ Wish List” on a movie to save it here.</div>';
+      } else {
+        list.innerHTML = savedMovies.map(movie => `<div class="saved-chip"><span>${movie.emoji}</span><span>${escapeHtml(movie.title)}</span><span class="tag">${movie.rating}</span><button type="button" aria-label="Remove ${escapeHtml(movie.title)}" data-remove="${movie.id}">×</button></div>`).join("");
+        list.querySelectorAll("[data-remove]").forEach(button => button.addEventListener("click", () => toggleSaved(button.dataset.remove)));
+      }
+      renderCounts();
+    }
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+    }
+    $("searchInput").addEventListener("input", renderMovies);
+    $("genreFilter").addEventListener("change", renderMovies);
+    $("ratingFilter").addEventListener("change", renderMovies);
+    $("yearFilter").addEventListener("change", renderMovies);
+    const yearSelect = $("yearFilter");
+    [...new Set(movies.map(movie => movie.year))].sort((a,b) => b-a).forEach(year => {
+      const option = document.createElement("option"); option.value = String(year); option.textContent = String(year); yearSelect.appendChild(option);
+    });
+    $("clearFilters").addEventListener("click", () => {
+      $("searchInput").value = ""; $("genreFilter").value = ""; $("ratingFilter").value = ""; $("yearFilter").value = ""; renderMovies();
+    });
+    $("clearWatchlist").addEventListener("click", () => {
+      if (!savedIds.length) { $("statusMessage").textContent = "Your wish list is already empty."; return; }
+      if (confirm("Remove every movie from your wish list?")) {
+        savedIds = []; saveSaved(); renderMovies(); renderWishList();
+        $("statusMessage").textContent = "Wish List cleared.";
+      }
+    });
+    $("yearNow").textContent = new Date().getFullYear();
+    renderMovies(); renderWishList();
+  </script>
+</body>
+</html>
